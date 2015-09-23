@@ -1,2 +1,2 @@
 # cpre185
-Introduction to Computer Engineering Problem Solving
+C code for Introduction to Computer Engineering Problem Solving at Iowa State University
