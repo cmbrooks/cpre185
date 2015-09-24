@@ -1,6 +1,13 @@
 // CprE 185: Lab 3
 // Problem 3: Esplora
 
+/*
+The expression computed in the printf() statement is useful in interpreting
+the data coming from explore.exe because it is easier to visualize motion as
+a single vector rather than trying to imagine how three seperate accelerations
+would affect the motion of an object at the same time.
+*/
+
 #include <stdio.h>
 #include <math.h>
 
