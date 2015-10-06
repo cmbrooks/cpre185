@@ -20,7 +20,7 @@
         a return type of enum SodaMachineStates to the getNextState() function
         to avoid bad programming style.
     <Reflection 4 Think about the most important thing you learned when writing this piece of code.  What was it and explain why it was significant.>
-
+        
 
 */
 
