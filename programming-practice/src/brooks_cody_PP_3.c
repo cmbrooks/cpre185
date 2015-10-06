@@ -154,10 +154,12 @@ int main () {
 
             case HELP:
                 printf("Below is a list of valid commands\n");
-                printf("\texit: Exits the prrogram\n");
                 printf("\tcheck: Returns the inventory of the soda machine and the current credit\n");
                 printf("\tadd_credit: Adds credit to buy sodas with\n");
                 printf("\tdispense: Dispenses the desired soda type if the machine has enough credit\n");
+                printf("\tstock: All sodas are restocked to full capacity\n");
+                printf("\tchange: Dispenses the remaining credit in the fewese number of coins possible\n");
+                printf("\texit: Exits the prrogram\n");
                 printf("\nBelow is a list of sodas available:\n");
                 printf("\tRC\n");
                 printf("\tDr Pepper (use Dr_Pepper)\n");
