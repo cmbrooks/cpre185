@@ -10,8 +10,8 @@ bool closeTo (double tolerance, double target, double val);
 int main () {
 	
 	bool fallen, falling;
-	int dotI, exclamationI, time, startFall, stopFall;
-	double x, y, z, acceleration, distanceFallen, fallTime;
+	int dotI, exclamationI, thisTms;
+	double ax, ay, az, acceleration, distanceFallen, fallTime, thisX, lastX, integralX, thisV, lastV, integralV, lastT, thisT, initialT;
 	
 	dotI = 0;
 	exclamationI = 0;
@@ -21,8 +21,10 @@ int main () {
 	printf("I'm waiting");
 	while (!fallen) {
 		
-		scanf("%d, %lf, %lf, %lf, %d, %d, %d, %d, %d, %d", &time, &x, &y, &z);
-		acceleration = mag(x, y, z);
+		scanf("%d, %lf, %lf, %lf, %d, %d, %d, %d, %d, %d", &thisTms, &ax, &ay, &az);
+		acceleration = mag(ax, ay, az);
+		thisT = thisTms / 1000.0; // Converts milliseconds to seconds
+		initialT = thisT;
 		
 		// Prints the right number of dots after "I'm waiting"
 		if (dotI > 20) {
@@ -34,32 +36,56 @@ int main () {
 		// The Esplora is falling if the magnitude of it's acceleration is no longer close to 1
 		if (!closeTo(0.25, 1, acceleration)) {
 			printf("\n\tHelp me! I'm falling");
-			startFall = time;
+			lastT = thisT;
+			lastX = 0.0;
+			lastV = 0.0;
 			falling = true;
+			
 			while (falling) {
+				
 				// Print exclamations marks while the Esplora is falling
 				if (exclamationI > 12) {
 					printf("!");
 					fflush(stdout);
 					exclamationI = 0;
 				}
-				scanf("%d, %lf, %lf, %lf, %d, %d, %d, %d, %d, %d", &time, &x, &y, &z);
-				acceleration = mag(x, y, z);
-				// The Esplora is no longer falling when the magnitude of it's acceleration is close to 1
+				
+				// Scan in new variables and make any necessary conversions
+				scanf("%d, %lf, %lf, %lf, %d, %d, %d, %d, %d, %d", &thisTms, &ax, &ay, &az);
+				acceleration = mag(ax, ay, az);
+				thisT = thisTms / 1000.0; // Converts milliseconds to seconds
+				
+				// Calculate the Riemann Sum of velocity over time to find distance function
+				thisV = lastV + 9.8 * (1.0 - acceleration) * (thisT - lastT);
+				
+				// Calculate the Riemann Sum of the position over time to find the distance travelled
+				thisX = lastX + thisV * (thisT - lastT);
+				
+				// Set the 'last' values for all the variables
+				lastX = thisX;
+				lastV = thisV;
+				lastT = thisT;
+				
+				// Check to see if the Esplora is still falling
 				if (closeTo(0.25, 1.0, acceleration)) {
 					falling = false;
-					stopFall = time;
 					fallen = true;
 				}
+							
 				exclamationI++;
+				
 			}
 		} 
 		dotI++;
 	}
 	
-	fallTime = (stopFall - startFall) * 0.001; // Multiplying by 0.001 converts milliseconds to seconds
+	fallTime = (lastT - initialT);
 	distanceFallen = getDistanceFallen(acceleration, fallTime);
-	printf("\n\t\tOuch! I fell %.3lf meters in %.10lf seconds\n", distanceFallen, fallTime);
+	printf("\n\t\tOuch! I fell %.3lf meters in %.10lf seconds, compensating for air resistance\n", thisX, fallTime);
+	
+	printf("\n\n\tCalculated distance using calculus:\t%lf meters in %lf seconds\n", thisX, fallTime);
+	printf("\tCalculated distance using algebra:\t%lf meters in %lf seconds\n", distanceFallen, fallTime);
+	printf("\tAlgebraic error: %lf meters (%lf%%)\n", distanceFallen - thisX, (distanceFallen - thisX) / thisX);
 	
 	return 0 ;
 
@@ -82,5 +108,5 @@ bool closeTo(double tolerance, double target, double val) {
 }
 
 double getDistanceFallen (double acceleration, double seconds) {
-	return (0.5 * (acceleration * 9.8) * pow(seconds, 2)); // Using the equation d = .5*a*t^2
+	return (0.5 * (9.8 - acceleration) * pow(seconds, 2)); // Using the equation d = .5*a*t^2
 }
